@@ -47,3 +47,31 @@ public:
         return ans;
     }
 };
+
+class Solution {
+public:
+    //动态规划, 时间复杂度O（n^2）, 空间复杂度O(n)
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        if(intervals.empty()) return 0;
+        int n = intervals.size();
+        vector<int> dp(n, 0);
+        //排序
+        sort(intervals.begin(), intervals.end(), [](vector<int> a, vector<int> b){
+            return a[0] < b[0];
+        });
+        
+        dp[0] = 1;
+        for(int i = 1; i < n; ++i){
+            int MAX = 0;
+            //i之前所有区间都有可能和i有重叠，一一比较
+            for(int j = i-1; j >= 0; --j){
+                if(intervals[i][0] >= intervals[j][1]){
+                    MAX = max(dp[j], MAX);
+                }
+            }
+            dp[i] = MAX + 1;
+        }
+        int m = *max_element(dp.begin(), dp.end());
+        return n - m;
+    }
+};
